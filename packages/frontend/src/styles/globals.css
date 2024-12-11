@@ -37,6 +37,12 @@ h1 {
   @apply font-serif;
 }
 
+h2 {
+  @apply text-3xl;
+  @apply font-light;
+  @apply font-serif;
+}
+
 #__next {
   @apply contents;
 }

@@ -13,14 +13,14 @@
   ],
   "devDependencies": {
     "@types/node": "^20.14.9",
-    "pridepack": "2.6.1",
     "tslib": "^2.6.3",
     "typescript": "^5.5.3",
     "vitest": "^1.6.0"
   },
   "dependencies": {
     "fastify": "^4.25.2",
-    "valibot": "1.0.0-beta.9"
+    "valibot": "1.0.0-beta.9",
+    "pridepack": "2.6.1"
   },
   "scripts": {
     "prepublishOnly": "pridepack clean && pridepack build",

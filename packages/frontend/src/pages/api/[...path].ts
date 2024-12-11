@@ -1,27 +1,35 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const getBookData = async () => {
-  return [
-
-  ];
-};
-
 const handler = async (
   req: NextApiRequest,
   res: NextApiResponse,
 ) => {
-  // TODO make this a proxy instead to the backend
-  const pathStrRaw = typeof req.query.path === 'string' ? req.query.path : req.query.path.join('/');
-  const pathStr = pathStrRaw.startsWith('/') ? pathStrRaw : `/${pathStrRaw}`;
-  switch (pathStr) {
-    case '/books':
-      res.status(200).json(await getBookData());
-      return;
-    case '/authors':
-      res.status(200)
+  const { path: pathRaw, ...etcQueryRaw } = req.query;
+  const pathStr = typeof pathRaw === 'string' ? pathRaw : (pathRaw?.join('/') ?? '');
+  const backendUrl = new URL(`/api/${pathStr}`, `http://${process.env.BACKEND_BASE_URL}`);
+  const etcQuery = Object.fromEntries(
+    Object.entries(etcQueryRaw).map(([key, value]) => [
+      key,
+      typeof value === 'string' ? value : value?.join('') ?? ''
+    ])
+  );
+  const query = new URLSearchParams(etcQuery);
+  backendUrl.search = query.toString();
+
+  console.log(backendUrl.toString());
+
+  const response = await fetch(backendUrl, {
+    method: req.method,
+  });
+
+  if (!response.ok) {
+    res.status(502).end();
+    return;
   }
 
-  res.status(404).json({});
+  const data = await response.json();
+
+  res.status(response.status).json(data);
 };
 
 export default handler;
