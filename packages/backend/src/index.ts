@@ -1,25 +1,15 @@
 import { createServer } from './server';
 import { addRoutes } from './routes';
+import * as config from './config';
 
-interface Args {
-  port: number;
-  host: string;
-  env: string;
-}
-
-const main = async (args: Args) => {
-  const {
-    port,
-    host,
-    env,
-  } = args;
+const main = async (args: typeof config) => {
   const server = createServer({
-    logger: env !== 'test',
+    logger: args.meta.env !== 'test',
   });
 
   addRoutes(server);
 
-  server.listen({ port, host }, (err, address) => {
+  server.listen({ port: args.meta.port, host: args.meta.host }, (err, address) => {
     if (err) {
       server.log.error(err.message);
       process.exit(1);
@@ -28,8 +18,4 @@ const main = async (args: Args) => {
   });
 };
 
-void main({
-  port: Number(process.env.PORT ?? '8080'),
-  host: process.env.HOST ?? '0.0.0.0',
-  env: process.env.NODE_ENV ?? 'development',
-});
+void main(config);

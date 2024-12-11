@@ -1,133 +1,65 @@
 import { Book } from '../../models';
+import { PrismaClient } from '@prisma/client';
 
-const DUMMY_DATA: Book[] = [
-  {
-    id: '1',
-    title: 'Book name',
-    author: {
-      id: '1',
-      name: 'Author name',
-    },
-    authorId: '1',
-    coverUrl: 'http://placehold.it/1',
-  },
-  {
-    id: '2',
-    title: 'Very long book name',
-    author: {
-      id: '1',
-      name: 'Author name',
-    },
-    authorId: '1',
-    coverUrl: 'http://placehold.it/1',
-  },
-  {
-    id: '3',
-    title: 'Book name',
-    author: {
-      id: '1',
-      name: 'Author name',
-    },
-    authorId: '1',
-    coverUrl: 'http://placehold.it/1',
-  },
-  {
-    id: '4',
-    title: 'Very long book name',
-    author: {
-      id: '1',
-      name: 'Author name',
-    },
-    authorId: '1',
-    coverUrl: 'http://placehold.it/1',
-  },
-  {
-    id: '5',
-    title: 'Book name',
-    author: {
-      id: '1',
-      name: 'Author name',
-    },
-    authorId: '1',
-    coverUrl: 'http://placehold.it/1',
-  },
-  {
-    id: '6',
-    title: 'Very long book name',
-    author: {
-      id: '1',
-      name: 'Author name',
-    },
-    authorId: '1',
-    coverUrl: 'http://placehold.it/1',
-  },
-  {
-    id: '7',
-    title: 'Book name',
-    author: {
-      id: '1',
-      name: 'Author name',
-    },
-    authorId: '1',
-    coverUrl: 'http://placehold.it/1',
-  },
-  {
-    id: '8',
-    title: 'Very long book name',
-    author: {
-      id: '1',
-      name: 'Author name',
-    },
-    authorId: '1',
-    coverUrl: 'http://placehold.it/1',
-  },
-];
+const prisma = new PrismaClient();
 
 export const findMultipleBooks = async (query?: string): Promise<Book[]> => {
   if (typeof query === 'undefined') {
-    return DUMMY_DATA;
+    return prisma.book.findMany();
   }
 
   const queryNormalized = query.toLowerCase();
-  return DUMMY_DATA.filter((d) => {
-    const title = d.title.toLowerCase();
-    if (typeof d.author !== 'undefined') {
-      const authorName = d.author.name?.toLowerCase();
-
-      if (typeof authorName !== 'undefined') {
-        return title.includes(queryNormalized) || authorName.includes(queryNormalized);
-      }
+  return prisma.book.findMany({
+    where: {
+      OR: [
+        {
+          title: {
+            contains: queryNormalized,
+          },
+        },
+        {
+          author: {
+            name: {
+              contains: queryNormalized,
+            },
+          },
+        }
+      ]
     }
-
-    return title.includes(queryNormalized);
   });
 };
 
 export const findOneBook = async (bookId: Book['id']): Promise<Book | undefined> => {
-  return DUMMY_DATA.find((d) => d.id === bookId);
+  return prisma.book.findUnique({
+    where: {
+      id: bookId,
+    }
+  });
 };
 
 export const createNewBook = async (bookDataParams: Partial<Book>): Promise<Book | undefined> => {
-  const newBook = bookDataParams as Book;
-  DUMMY_DATA.push(newBook);
-  return newBook;
+  return prisma.book.create({
+    data: bookDataParams,
+  });
 };
 
 export const updateExistingBook = async (bookId: Book['id']) => {
-  const existingBookIndex = DUMMY_DATA.findIndex((d) => d.id === bookId);
   return async (bookDataParams: Partial<Book>): Promise<Book | undefined> => {
-    if (existingBookIndex > -1) {
-      const newData = { ...bookDataParams, id: bookId } as Book;
-      DUMMY_DATA.splice(existingBookIndex, 1, newData);
-      return newData;
-    }
-    return undefined;
+    return prisma.book.update({
+      where: {
+        id: bookId,
+      },
+      data: {
+        bookDataParams,
+      },
+    });
   };
 };
 
 export const deleteExistingBook = async (bookId: Book['id']): Promise<void> => {
-  const existingBookIndex = DUMMY_DATA.findIndex((d) => d.id === bookId);
-  if (existingBookIndex > -1) {
-    DUMMY_DATA.splice(existingBookIndex, 1);
-  }
+  return prisma.book.delete({
+    where: {
+      id: bookId,
+    },
+  });
 };

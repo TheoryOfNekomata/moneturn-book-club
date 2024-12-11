@@ -4,4 +4,4 @@ COPY . .
 RUN pnpm install
 RUN pnpm build
 EXPOSE 8080
-CMD ["pnpm", "start"]
+CMD ["./startup.sh"]

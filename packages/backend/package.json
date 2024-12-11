@@ -18,9 +18,12 @@
     "vitest": "^1.6.0"
   },
   "dependencies": {
+    "@prisma/client": "6.0.1",
     "fastify": "^4.25.2",
-    "valibot": "1.0.0-beta.9",
-    "pridepack": "2.6.1"
+    "postgres": "^3.4.5",
+    "pridepack": "2.6.1",
+    "prisma": "^6.0.1",
+    "valibot": "1.0.0-beta.9"
   },
   "scripts": {
     "prepublishOnly": "pridepack clean && pridepack build",
