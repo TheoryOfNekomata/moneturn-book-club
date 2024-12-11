@@ -1,13 +1,14 @@
 import { constants } from 'http2';
-import fastify from 'fastify';
+import { RouteHandlerMethod } from 'fastify';
 import * as v from 'valibot';
 import * as bookService from './service';
 import { Book, BookSchema } from '../../models';
 
-export const getFindAllBooks: fastify.RouteHandlerMethod = async (request, reply) => {
+export const getFindAllBooks: RouteHandlerMethod = async (request, reply) => {
   let existingBooks: Book[];
   try {
-    existingBooks = await bookService.findAllBooks();
+    const query = request.query as { q?: string };
+    existingBooks = await bookService.findMultipleBooks(query.q ?? '');
   } catch {
     reply.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
     return;
@@ -16,10 +17,11 @@ export const getFindAllBooks: fastify.RouteHandlerMethod = async (request, reply
   reply.send(existingBooks);
 };
 
-export const getFindOneBook: fastify.RouteHandlerMethod = async (request, reply) => {
+export const getFindOneBook: RouteHandlerMethod = async (request, reply) => {
   let existingBook: Book | undefined;
   try {
-    existingBook = await bookService.findOneBook(request.params.bookId);
+    const params = request.params as { bookId: string };
+    existingBook = await bookService.findOneBook(params.bookId);
   } catch {
     reply.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
     return;
@@ -33,11 +35,11 @@ export const getFindOneBook: fastify.RouteHandlerMethod = async (request, reply)
   reply.send(existingBook);
 };
 
-export const postCreateNewBook: fastify.RouteHandlerMethod = async (request, reply) => {
+export const postCreateNewBook: RouteHandlerMethod = async (request, reply) => {
   let newBookData: Book;
   try {
     newBookData = await v.parseAsync(BookSchema, request.body);
-  } catch {
+  } catch (e) {
     reply.status(constants.HTTP_STATUS_BAD_REQUEST).send();
     return;
   }
@@ -53,7 +55,7 @@ export const postCreateNewBook: fastify.RouteHandlerMethod = async (request, rep
   reply.status(constants.HTTP_STATUS_CREATED).send(newBook);
 };
 
-export const putUpdateExistingBook: fastify.RouteHandlerMethod = async (request, reply) => {
+export const putUpdateExistingBook: RouteHandlerMethod = async (request, reply) => {
   let newBookData: Book;
   try {
     newBookData = await v.parseAsync(BookSchema, request.body);
@@ -62,9 +64,10 @@ export const putUpdateExistingBook: fastify.RouteHandlerMethod = async (request,
     return;
   }
 
-  let updateFn: ((id: Book) => Promise<Book>) | undefined;
+  let updateFn: ((bookData: Partial<Book>) => Promise<Book | undefined>) | undefined;
   try {
-    updateFn = await bookService.updateExistingBook(request.params.bookId);
+    const params = request.params as { bookId: string };
+    updateFn = await bookService.updateExistingBook(params.bookId);
   } catch {
     reply.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
     return;
@@ -86,10 +89,11 @@ export const putUpdateExistingBook: fastify.RouteHandlerMethod = async (request,
   reply.send(updatedBook);
 };
 
-export const deleteExistingBook: fastify.RouteHandlerMethod = async (request, reply) => {
+export const deleteExistingBook: RouteHandlerMethod = async (request, reply) => {
   let existingBook: Book | undefined;
   try {
-    existingBook = await bookService.findOneBook(request.params.bookId);
+    const params = request.params as { bookId: string };
+    existingBook = await bookService.findOneBook(params.bookId);
   } catch {
     reply.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
     return;

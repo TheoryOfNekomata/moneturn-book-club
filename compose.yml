@@ -1,0 +1,23 @@
+name: moneturn-book-club
+services:
+  backend:
+    depends_on:
+      - database
+    env_file: ./packages/backend/.env
+    build: ./packages/backend
+    ports:
+      - "8080:8080"
+  frontend:
+    depends_on:
+      - backend
+    env_file: ./packages/frontend/.env
+    build: ./packages/frontend
+    ports:
+      - "3000:3000"
+  database:
+    image: postgres:16.6-alpine3.21
+    volumes:
+      - database:/var/lib/postgresql/data
+    env_file: ./packages/backend/.env
+volumes:
+  database:

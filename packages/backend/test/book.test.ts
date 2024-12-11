@@ -28,17 +28,17 @@ describe('Books API', () => {
   });
 
   describe('Find All Books', () => {
-    type MockFindAllBooks = Mock<Parameters<typeof bookService.findAllBooks>, ReturnType<typeof bookService.findAllBooks>>;
-    let mockFindAllBooks: MockFindAllBooks;
+    type MockFindMultipleBooks = Mock<Parameters<typeof bookService.findMultipleBooks>, ReturnType<typeof bookService.findMultipleBooks>>;
+    let mockFindMultipleBooks: MockFindMultipleBooks;
     beforeEach(() => {
-      mockFindAllBooks = bookService.findAllBooks as MockFindAllBooks;
+      mockFindMultipleBooks = bookService.findMultipleBooks as MockFindMultipleBooks;
     });
     afterEach(() => {
-      mockFindAllBooks.mockReset();
+      mockFindMultipleBooks.mockReset();
     });
 
     it('returns an OK response', async () => {
-      mockFindAllBooks.mockResolvedValueOnce([mockBook]);
+      mockFindMultipleBooks.mockResolvedValueOnce([mockBook]);
       const response = await server.inject().get('/api/books').headers({
         Accept: 'application/json',
       });
@@ -50,7 +50,7 @@ describe('Books API', () => {
     });
 
     it('returns an error response when the service fails', async () => {
-      mockFindAllBooks.mockRejectedValueOnce({});
+      mockFindMultipleBooks.mockRejectedValueOnce({});
       const response = await server.inject().get('/api/books').headers({
         Accept: 'application/json',
       });
@@ -109,6 +109,7 @@ describe('Books API', () => {
       id: mockBookId,
       title: 'Book Name',
       authorId: 'Foo',
+      coverUrl: '',
     };
 
     it('returns a Created response', async () => {
@@ -157,6 +158,7 @@ describe('Books API', () => {
       id: mockBookId,
       title: 'Book Name',
       authorId: 'Foo',
+      coverUrl: '',
     };
 
     it('returns an OK response', async () => {

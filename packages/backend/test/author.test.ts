@@ -27,17 +27,17 @@ describe('Authors API', () => {
   });
 
   describe('Find All Authors', () => {
-    type MockFindAllAuthors = Mock<Parameters<typeof authorService.findAllAuthors>, ReturnType<typeof authorService.findAllAuthors>>;
-    let mockFindAllAuthors: MockFindAllAuthors;
+    type MockFindMultipleAuthors = Mock<Parameters<typeof authorService.findMultipleAuthors>, ReturnType<typeof authorService.findMultipleAuthors>>;
+    let mockFindMultipleAuthors: MockFindMultipleAuthors;
     beforeEach(() => {
-      mockFindAllAuthors = authorService.findAllAuthors as MockFindAllAuthors;
+      mockFindMultipleAuthors = authorService.findMultipleAuthors as MockFindMultipleAuthors;
     });
     afterEach(() => {
-      mockFindAllAuthors.mockReset();
+      mockFindMultipleAuthors.mockReset();
     });
 
     it('returns an OK response', async () => {
-      mockFindAllAuthors.mockResolvedValueOnce([mockAuthor]);
+      mockFindMultipleAuthors.mockResolvedValueOnce([mockAuthor]);
       const response = await server.inject().get('/api/authors').headers({
         Accept: 'application/json',
       });
@@ -49,7 +49,7 @@ describe('Authors API', () => {
     });
 
     it('returns an error response when the service fails', async () => {
-      mockFindAllAuthors.mockRejectedValueOnce({});
+      mockFindMultipleAuthors.mockRejectedValueOnce({});
       const response = await server.inject().get('/api/authors').headers({
         Accept: 'application/json',
       });

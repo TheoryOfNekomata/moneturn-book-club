@@ -1,7 +1,7 @@
-import fastify from 'fastify';
+import { FastifyInstance } from 'fastify';
 import * as bookController from './controller';
 
-export const addRoutes = (server: fastify.FastifyInstance) => {
+export const addRoutes = (server: FastifyInstance) => {
   return server
     .route({
       method: 'GET',

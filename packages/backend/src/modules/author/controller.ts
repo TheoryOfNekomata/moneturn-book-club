@@ -1,13 +1,14 @@
 import { constants } from 'http2';
-import fastify from 'fastify';
+import { RouteHandlerMethod } from 'fastify';
 import * as v from 'valibot';
 import * as authorService from './service';
 import { Author, AuthorSchema } from '../../models';
 
-export const getFindAllAuthors: fastify.RouteHandlerMethod = async (request, reply) => {
+export const getFindAllAuthors: RouteHandlerMethod = async (request, reply) => {
   let existingAuthors: Author[];
   try {
-    existingAuthors = await authorService.findAllAuthors();
+    const query = request.query as { q?: string };
+    existingAuthors = await authorService.findMultipleAuthors(query.q ?? '');
   } catch {
     reply.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
     return;
@@ -16,10 +17,11 @@ export const getFindAllAuthors: fastify.RouteHandlerMethod = async (request, rep
   reply.send(existingAuthors);
 };
 
-export const getFindOneAuthor: fastify.RouteHandlerMethod = async (request, reply) => {
+export const getFindOneAuthor: RouteHandlerMethod = async (request, reply) => {
   let existingAuthor: Author | undefined;
   try {
-    existingAuthor = await authorService.findOneAuthor(request.params.authorId);
+    const params = request.params as { authorId: string };
+    existingAuthor = await authorService.findOneAuthor(params.authorId);
   } catch {
     reply.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
     return;
@@ -33,7 +35,7 @@ export const getFindOneAuthor: fastify.RouteHandlerMethod = async (request, repl
   reply.send(existingAuthor);
 };
 
-export const postCreateNewAuthor: fastify.RouteHandlerMethod = async (request, reply) => {
+export const postCreateNewAuthor: RouteHandlerMethod = async (request, reply) => {
   let newAuthorData: Author;
   try {
     newAuthorData = await v.parseAsync(AuthorSchema, request.body);
@@ -53,7 +55,7 @@ export const postCreateNewAuthor: fastify.RouteHandlerMethod = async (request, r
   reply.status(constants.HTTP_STATUS_CREATED).send(newAuthor);
 };
 
-export const putUpdateExistingAuthor: fastify.RouteHandlerMethod = async (request, reply) => {
+export const putUpdateExistingAuthor: RouteHandlerMethod = async (request, reply) => {
   let newAuthorData: Author;
   try {
     newAuthorData = await v.parseAsync(AuthorSchema, request.body);
@@ -62,9 +64,10 @@ export const putUpdateExistingAuthor: fastify.RouteHandlerMethod = async (reques
     return;
   }
 
-  let updateFn: ((id: Author) => Promise<Author>) | undefined;
+  let updateFn: ((authorData: Partial<Author>) => Promise<Author | undefined>) | undefined;
   try {
-    updateFn = await authorService.updateExistingAuthor(request.params.authorId);
+    const params = request.params as { authorId: string };
+    updateFn = await authorService.updateExistingAuthor(params.authorId);
   } catch {
     reply.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
     return;
@@ -86,10 +89,11 @@ export const putUpdateExistingAuthor: fastify.RouteHandlerMethod = async (reques
   reply.send(updatedAuthor);
 };
 
-export const deleteExistingAuthor: fastify.RouteHandlerMethod = async (request, reply) => {
+export const deleteExistingAuthor: RouteHandlerMethod = async (request, reply) => {
   let existingAuthor: Author | undefined;
   try {
-    existingAuthor = await authorService.findOneAuthor(request.params.authorId);
+    const params = request.params as { authorId: string };
+    existingAuthor = await authorService.findOneAuthor(params.authorId);
   } catch {
     reply.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send();
     return;

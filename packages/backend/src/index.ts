@@ -13,7 +13,9 @@ const main = async (args: Args) => {
     host,
     env,
   } = args;
-  const server = createServer();
+  const server = createServer({
+    logger: env !== 'test',
+  });
 
   addRoutes(server);
 

@@ -5,6 +5,13 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --length-screen-xxs: 360px;
+  --length-screen-xs: calc(var(--length-screen-xxs) * 1.5);
+  --length-screen-sm: calc(var(--length-screen-xxs) * 2.0);
+  --length-screen-md: calc(var(--length-screen-xxs) * 2.5);
+  --length-screen-lg: calc(var(--length-screen-xxs) * 3.0);
+  --length-screen-xl: calc(var(--length-screen-xxs) * 4.0);
+  --length-screen-xxl: calc(var(--length-screen-xxs) * 5.0);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -14,8 +21,22 @@
   }
 }
 
+:root {
+  @apply h-full;
+}
+
 body {
+  @apply h-full;
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+  @apply text-5xl;
+  @apply font-light;
+  @apply font-serif;
+}
+
+#__next {
+  @apply contents;
 }

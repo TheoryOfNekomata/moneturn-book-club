@@ -10,6 +10,8 @@ export const BookSchema = v.object({
   title: v.string(),
   author: v.optional(AuthorSchema),
   authorId: AuthorSchema.entries.id,
+  // additional
+  coverUrl: v.string(),
 });
 
 export type Book = v.InferOutput<typeof BookSchema>;
