@@ -4,13 +4,13 @@ services:
     image: postgres:16.6-alpine3.21
     volumes:
       - database:/var/lib/postgresql/data
-    env_file: packages/database/.env
+    env_file: packages/database/.env.docker
     ports:
       - "5432:5432"
   backend:
     depends_on:
       - database
-    env_file: packages/backend/.env
+    env_file: packages/backend/.env.docker
     build: ./packages/backend
     ports:
       - "8080:8080"
@@ -19,7 +19,7 @@ services:
   frontend:
     depends_on:
       - backend
-    env_file: packages/frontend/.env
+    env_file: packages/frontend/.env.docker
     build: ./packages/frontend
     ports:
       - "3000:3000"

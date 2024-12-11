@@ -106,3 +106,5 @@ dist
 
 .npmrc
 types/
+.env
+.env.docker

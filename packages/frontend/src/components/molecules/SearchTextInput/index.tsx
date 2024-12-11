@@ -1,13 +1,13 @@
 import * as React from 'react';
 
-export type SearchTextInputBaseElement = HTMLElementTagNameMap['input'];
+export type SearchTextInputDerivedElement = HTMLElementTagNameMap['input'];
 
-export interface SearchTextInputProps extends Omit<React.HTMLProps<SearchTextInputBaseElement>, 'label'> {
+export interface SearchTextInputProps extends Omit<React.HTMLProps<SearchTextInputDerivedElement>, 'label'> {
   label?: React.ReactNode;
   hint?: React.ReactNode;
 }
 
-export const SearchTextInput = React.forwardRef<SearchTextInputBaseElement, SearchTextInputProps>(({
+export const SearchTextInput = React.forwardRef<SearchTextInputDerivedElement, SearchTextInputProps>(({
   label,
   id: idProp,
   className = '',

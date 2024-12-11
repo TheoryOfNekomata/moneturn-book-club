@@ -3,9 +3,46 @@ import { NextPage } from 'next';
 import Link from 'next/link';
 import { SearchForm } from '@/components/organisms/SearchForm';
 import { useFeatured, useOmnisearch } from '@/hooks/home';
+import { ActionButton } from '@/components/molecules/ActionButton';
+import { useRouter } from 'next/router';
+
+const useHomeActions = () => {
+  const router = useRouter();
+  const dialogId = 'home-fab';
+
+  const handleFloatingActionButtonClick = React.useCallback<React.FormEventHandler<HTMLElementTagNameMap['form']>>(async (e) => {
+    e.preventDefault();
+    const { dialog, ...etcQuery } = router.query;
+    if (dialog === dialogId) {
+      await router.push({
+        query: etcQuery,
+      });
+      return;
+    }
+
+    await router.push({
+      query: {
+        ...etcQuery,
+        dialog: dialogId,
+      },
+    });
+  }, []);
+
+  const isFabActive = React.useMemo(() => router.query.dialog === dialogId, [router.query.dialog]);
+
+  return React.useMemo(() => ({
+    handleFloatingActionButtonClick,
+    isFabActive,
+  }), [
+    handleFloatingActionButtonClick,
+    isFabActive,
+  ]);
+};
 
 const IndexPage: NextPage = () => {
   const { handleSearchFormSubmit, books, authors, isBlankQuery } = useOmnisearch();
+  const { isFabActive, handleFloatingActionButtonClick } = useHomeActions();
+
   const { featured } = useFeatured();
 
   return (
@@ -14,16 +51,54 @@ const IndexPage: NextPage = () => {
         <div className="max-w-screen-sm w-full mx-auto px-8 box-border">
           <div className="flex flex-col gap-16 justify-center">
             <h1 className="text-center">Moneturn Book Club</h1>
-            <form
-              onSubmit={handleSearchFormSubmit}
-            >
-              <SearchForm
-                label="Search Form"
-              />
-            </form>
+            <div className="mb-4">
+              <form
+                onSubmit={handleSearchFormSubmit}
+              >
+                <SearchForm
+                  label="Search Form"
+                />
+              </form>
+            </div>
           </div>
         </div>
       </div>
+      <aside className="fixed bottom-0 right-0">
+        <div>
+          <form
+            onSubmit={handleFloatingActionButtonClick}
+          >
+            {!isFabActive && (
+              <ActionButton
+                type="submit"
+                name="dialog"
+                value="home-fab"
+              >
+                Add New
+              </ActionButton>
+            )}
+            {isFabActive && (
+              <>
+                <ActionButton
+                  type="submit"
+                  name="home-fab"
+                  value="book"
+                >
+                  Book
+                </ActionButton>
+                {' '}
+                <ActionButton
+                  type="submit"
+                  name="home-fab"
+                  value="author"
+                >
+                  Author
+                </ActionButton>
+              </>
+            )}
+          </form>
+        </div>
+      </aside>
       <div className="max-w-screen-sm w-full mx-auto px-8 box-border pb-16">
         {isBlankQuery && featured && (
           <section className="flex flex-col gap-4">
@@ -31,7 +106,7 @@ const IndexPage: NextPage = () => {
               Featured
             </h2>
             <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-4 gap-y-12">
-              {featured.map((r) => (
+            {featured.map((r) => (
                 <li
                   className="block"
                   key={r.id}
@@ -39,6 +114,7 @@ const IndexPage: NextPage = () => {
                   <Link href={`/books/${r.id}`}>
                     <div className="pb-[150%] w-full relative mb-2">
                       <img src={r.coverUrl ?? "http://placehold.it/1"}
+                           alt={r.author?.name ?? 'Anonymous'}
                            className="w-full h-full block top-0 left-0 absolute object-cover object-center"/>
                     </div>
                     <div className="leading-tight font-bold text-sm">
