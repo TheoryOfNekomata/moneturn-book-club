@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SearchTextInput } from '@/components/molecules/SearchTextInput';
+import { TextInput } from '../../molecules/TextInput';
 import { ActionButton } from '@/components/molecules/ActionButton';
 
 export interface SearchFormProps {
@@ -16,10 +16,11 @@ export const SearchForm: React.FC<SearchFormProps> = ({
       </legend>
       <div className="flex gap-4">
         <div className="flex-auto">
-          <SearchTextInput
+          <TextInput
             label="Query"
             hint="(Enter names of books, authors&hellip;)"
             name="q"
+            type="search"
           />
         </div>
         <div>

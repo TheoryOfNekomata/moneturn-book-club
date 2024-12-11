@@ -16,13 +16,26 @@ const handler = async (
   const query = new URLSearchParams(etcQuery);
   backendUrl.search = query.toString();
 
-  console.log(backendUrl.toString());
+  const method = req.method ?? 'GET';
+  const fetchInit = {
+    method,
+    headers: {
+      'Accept': 'application/json',
+    },
+  };
 
-  const response = await fetch(backendUrl, {
-    method: req.method,
-  });
+  if (['POST', 'PUT', 'PATCH'].includes(method.toUpperCase()) && req.body) {
+    (fetchInit as Record<string, unknown>).body = JSON.stringify(req.body);
+    (fetchInit.headers as Record<string, unknown>)['Content-Type'] = 'application/json';
+  }
+
+  const response = await fetch(backendUrl, fetchInit);
 
   if (!response.ok) {
+    if (400 <= response.status && response.status <= 499) {
+      res.status(response.status).end();
+      return;
+    }
     res.status(502).end();
     return;
   }

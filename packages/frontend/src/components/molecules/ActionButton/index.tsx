@@ -1,6 +1,8 @@
 import * as React from 'react';
 
-export type ActionButtonDerivedElement = HTMLElementTagNameMap['button'];
+export const ActionButtonDerivedElementComponent = 'button' as const;
+
+export type ActionButtonDerivedElement = HTMLElementTagNameMap[typeof ActionButtonDerivedElementComponent];
 
 export const ACTION_BUTTON_VARIANT_CLASS_NAMES = {
   'default': 'bg-background',
@@ -20,6 +22,7 @@ export type ActionButtonSize = keyof typeof ACTION_BUTTON_SIZE_CLASS_NAMES;
 export interface ActionButtonProps extends Omit<React.HTMLProps<ActionButtonDerivedElement>, 'size'> {
   variant?: ActionButtonVariant;
   size?: ActionButtonSize;
+  rounded?: boolean;
 }
 
 export const ActionButton = React.forwardRef<ActionButtonDerivedElement, ActionButtonProps>(({
@@ -27,20 +30,21 @@ export const ActionButton = React.forwardRef<ActionButtonDerivedElement, ActionB
   className = '',
   variant = 'default',
   size = 'md',
+  rounded = false,
   ...etcProps
 }, forwardedRef) => {
-  const effectiveClassName = `h-12 relative rounded overflow-hidden ${ACTION_BUTTON_SIZE_CLASS_NAMES[size]} ${ACTION_BUTTON_VARIANT_CLASS_NAMES[variant]} ${className}`.trim()
+  const effectiveClassName = `relative ${rounded ? 'rounded-full' : 'rounded'} overflow-hidden ${ACTION_BUTTON_SIZE_CLASS_NAMES[size]} ${ACTION_BUTTON_VARIANT_CLASS_NAMES[variant]} ${className}`.trim()
   return (
-    <button
+    <ActionButtonDerivedElementComponent
       {...etcProps}
       className={effectiveClassName}
       ref={forwardedRef}
     >
       <span className="absolute top-0 left-0 rounded-[inherit] w-full h-full border-2" />
-      <span className="relative px-4 font-bold">
+      <span className="relative px-4 font-bold flex items-center justify-center">
         {children}
       </span>
-    </button>
+    </ActionButtonDerivedElementComponent>
   );
 });
 

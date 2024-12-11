@@ -1,13 +1,15 @@
 import * as React from 'react';
 
-export type SearchTextInputDerivedElement = HTMLElementTagNameMap['input'];
+export const TextInputDerivedElementComponent = 'input' as const;
 
-export interface SearchTextInputProps extends Omit<React.HTMLProps<SearchTextInputDerivedElement>, 'label'> {
+export type TextInputDerivedElement = HTMLElementTagNameMap[typeof TextInputDerivedElementComponent];
+
+export interface TextInputProps extends Omit<React.HTMLProps<TextInputDerivedElement>, 'label'> {
   label?: React.ReactNode;
   hint?: React.ReactNode;
 }
 
-export const SearchTextInput = React.forwardRef<SearchTextInputDerivedElement, SearchTextInputProps>(({
+export const TextInput = React.forwardRef<TextInputDerivedElement, TextInputProps>(({
   label,
   id: idProp,
   className = '',
@@ -16,7 +18,7 @@ export const SearchTextInput = React.forwardRef<SearchTextInputDerivedElement, S
 }, forwardedRef) => {
   const defaultId = React.useId();
   const effectiveId = idProp ?? defaultId;
-  const effectiveClassName = `block w-full h-12 bg-background rounded-[inherit] px-4 relative ${className}`.trim();
+  const effectiveClassName = `block w-full min-h-12 h-0 bg-background rounded-[inherit] px-4 relative ${className}`.trim();
 
   return (
     <div>
@@ -35,7 +37,7 @@ export const SearchTextInput = React.forwardRef<SearchTextInputDerivedElement, S
             {' '}
           </>
         )}
-        <input
+        <TextInputDerivedElementComponent
           {...etcProps}
           id={effectiveId}
           ref={forwardedRef}
@@ -54,4 +56,4 @@ export const SearchTextInput = React.forwardRef<SearchTextInputDerivedElement, S
   );
 });
 
-SearchTextInput.displayName = 'SearchTextInput';
+TextInput.displayName = 'TextInput';

@@ -9,7 +9,7 @@ export const BookSchema = v.object({
   id: v.string(),
   title: v.string(),
   author: v.optional(AuthorSchema),
-  authorId: AuthorSchema.entries.id,
+  authorId: v.optional(AuthorSchema.entries.id),
   // additional
   coverUrl: v.string(),
 });

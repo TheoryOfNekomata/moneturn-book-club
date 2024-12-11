@@ -38,8 +38,9 @@ export const getFindOneBook: RouteHandlerMethod = async (request, reply) => {
 export const postCreateNewBook: RouteHandlerMethod = async (request, reply) => {
   let newBookData: Book;
   try {
-    newBookData = await v.parseAsync(BookSchema, request.body);
+    newBookData = await v.parseAsync(v.partial(BookSchema), request.body);
   } catch (e) {
+    console.log(JSON.stringify(e.issues, null, 2));
     reply.status(constants.HTTP_STATUS_BAD_REQUEST).send();
     return;
   }
