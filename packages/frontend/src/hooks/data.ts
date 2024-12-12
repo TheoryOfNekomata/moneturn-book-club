@@ -8,7 +8,7 @@ export interface UseDataArgs {
 }
 
 export const useData = (args: UseDataArgs) => {
-  const [data, setData] = React.useState<Book[]>();
+  const [data, setData] = React.useState<unknown>();
 
   React.useEffect(() => {
     const loadData = async () => {

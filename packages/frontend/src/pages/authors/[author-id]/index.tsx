@@ -1,4 +1,3 @@
-import { EditBookDialog } from '@/components/organisms/EditBookDialog';
 import { Dialog } from '@/components/molecules/Dialog';
 import * as React from 'react';
 import { useEditor } from '@/hooks/editor';
@@ -6,12 +5,12 @@ import { useDialog } from '@/hooks/dialog';
 import { ActionButton } from '@/components/molecules/ActionButton';
 import { Icon } from '@/components/molecules/Icon';
 import { useBackNavigation } from '@/hooks/navigation';
-import { DeleteBookDialog } from '@/components/organisms/DeleteBookDialog';
 import { useRouter } from 'next/router';
 import { useData } from '@/hooks/data';
 import { EditAuthorDialog } from '@/components/organisms/EditAuthorDialog';
 import { DeleteAuthorDialog } from '@/components/organisms/DeleteAuthorDialog';
 import { BookQuerySection } from '@/components/organisms/BookQuerySection';
+import { Author } from '@/models';
 
 const AuthorDetailsPage = () => {
   const router = useRouter();
@@ -156,7 +155,7 @@ const AuthorDetailsPage = () => {
         <EditAuthorDialog
           currentAuthorId={currentAuthorId}
           onEditAuthorAction={handleEditAuthorAction}
-          defaultValues={authorData}
+          defaultValues={authorData as Partial<Author> | undefined}
         />
       </Dialog>
       <Dialog

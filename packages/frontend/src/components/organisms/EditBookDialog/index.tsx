@@ -4,7 +4,6 @@ import { MultilineTextInput } from '@/components/molecules/MultilineTextInput';
 import { ActionButton } from '@/components/molecules/ActionButton';
 import * as React from 'react';
 import { Author, Book } from '@/models';
-import { AutocompleteTextInput } from '@/components/molecules/AutocompleteTextInput';
 import { ComboBox } from '@/components/molecules/ComboBox';
 
 export interface EditBookDialogProps {

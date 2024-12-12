@@ -10,6 +10,7 @@ import { DeleteBookDialog } from '@/components/organisms/DeleteBookDialog';
 import { useRouter } from 'next/router';
 import { useData } from '@/hooks/data';
 import Link from 'next/link';
+import { Book } from '@/models';
 
 const BookDetailsPage = () => {
   const router = useRouter();
@@ -151,7 +152,7 @@ const BookDetailsPage = () => {
         <EditBookDialog
           currentBookId={currentBookId}
           onEditBookAction={handleEditBookAction}
-          defaultValues={data}
+          defaultValues={data as Partial<Book> | undefined}
         />
       </Dialog>
       <Dialog
