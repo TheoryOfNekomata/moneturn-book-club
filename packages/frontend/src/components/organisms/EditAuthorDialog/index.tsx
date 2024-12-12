@@ -3,34 +3,31 @@ import { TextInput } from '@/components/molecules/TextInput';
 import { MultilineTextInput } from '@/components/molecules/MultilineTextInput';
 import { ActionButton } from '@/components/molecules/ActionButton';
 import * as React from 'react';
-import { Author, Book } from '@/models';
-import { AutocompleteTextInput } from '@/components/molecules/AutocompleteTextInput';
+import { Author } from '@/models';
 import { ComboBox } from '@/components/molecules/ComboBox';
 
-export interface EditBookDialogProps {
-  onEditBookAction?: React.FormEventHandler<HTMLElementTagNameMap['form']>;
+export interface EditAuthorDialogProps {
+  onEditAuthorAction?: React.FormEventHandler<HTMLElementTagNameMap['form']>;
   onAuthorInput?: React.FormEventHandler<HTMLElementTagNameMap['input']>;
-  currentBookId?: Book['id'];
-  defaultValues?: Partial<Book>;
+  currentAuthorId?: Author['id'];
+  defaultValues?: Partial<Author>;
   authors?: Author[];
 }
 
-export const EditBookDialog: React.FC<EditBookDialogProps> = ({
-  onEditBookAction,
-  onAuthorInput,
-  currentBookId,
+export const EditAuthorDialog: React.FC<EditAuthorDialogProps> = ({
+  onEditAuthorAction,
+  currentAuthorId,
   defaultValues,
-  authors,
 }) => {
   return (
     <div className="max-w-screen-sm w-full mx-auto px-8 box-border">
       <div className="text-foreground bg-background my-16 rounded overflow-hidden border">
         <form
-          onSubmit={onEditBookAction}
+          onSubmit={onEditAuthorAction}
         >
           <header className="px-8 h-16 flex justify-between items-center">
             <h2>
-              {currentBookId ? 'Edit Book' : 'Add Book'}
+              {currentAuthorId ? 'Edit Author' : 'Add Author'}
             </h2>
             <div>
               <button
@@ -43,30 +40,21 @@ export const EditBookDialog: React.FC<EditBookDialogProps> = ({
             </div>
           </header>
           <div className="flex flex-col gap-4 px-8">
-            {currentBookId && <input type="hidden" name="id" value={currentBookId}/>}
+            {currentAuthorId && <input type="hidden" name="id" value={currentAuthorId}/>}
             <div>
-              <TextInput type="text" name="title" label="Title" defaultValue={defaultValues?.title} />
-            </div>
-            <div>
-              <ComboBox type="text" name="author" label="Author" onInput={onAuthorInput}>
-                {authors?.map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.name}
-                  </option>
-                ))}
-              </ComboBox>
+              <TextInput type="text" name="name" label="Name" defaultValue={defaultValues?.name} />
             </div>
             <div>
               <MultilineTextInput
-                name="description"
-                label="Description"
+                name="biography"
+                label="Biography"
                 rows="8"
               />
             </div>
           </div>
           <footer className="px-8 h-24 flex justify-end items-center">
             <ActionButton variant="primary" name="action" value="save">
-              Save Book
+              Save Author
             </ActionButton>
           </footer>
         </form>

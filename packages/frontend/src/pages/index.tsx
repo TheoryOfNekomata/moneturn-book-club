@@ -11,16 +11,41 @@ import { useDialog } from '@/hooks/dialog';
 import { EditBookDialog } from '@/components/organisms/EditBookDialog';
 import { Dialog } from '@/components/molecules/Dialog';
 import { useEditor } from '@/hooks/editor';
+import { useRouter } from 'next/router';
+import { Author } from '@/models';
 
 const IndexPage: NextPage = () => {
+  const router = useRouter();
   const { handleSearchFormSubmit, books, authors, isBlankQuery } = useOmnisearch();
   const { handleDialogSelect, currentOpenDialogId } = useDialog();
   const { currentItemId: currentBookId, handleAction: handleEditBookAction } = useEditor({
     itemIdQueryKey: 'book-id',
     saveFn: async (e) => {
       const formData = new FormData(e.currentTarget);
-      const data = Object.fromEntries(formData.entries());
-      const response = await fetch('/api/books', {
+      const { 'author.option': authorId, 'author.raw': authorName, ...data } = Object.fromEntries(formData.entries());
+
+      let effectiveAuthorId = authorId;
+      if (!authorId && authorName) {
+        const authorResponse = await fetch('/api/authors', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify({
+            name: authorName,
+          }),
+        });
+
+        if (!authorResponse.ok) {
+          return;
+        }
+
+        const authorData = await authorResponse.json();
+        effectiveAuthorId = authorData.id;
+      }
+
+      const bookResponse = await fetch('/api/books', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -28,13 +53,61 @@ const IndexPage: NextPage = () => {
         },
         body: JSON.stringify({
           title: data.title,
-          coverUrl: '', // TODO
+          coverUrl: 'http://placehold.it/1', // TODO
+          authorId: effectiveAuthorId,
         }),
       });
-      const responseData = await response.json();
-      console.log(responseData);
+
+      if (bookResponse.ok) {
+        router.back();
+        setTimeout(() => {
+          router.reload();
+        });
+      }
     },
   });
+
+  const authorSearchDebounce = React.useRef<number | null>(null);
+
+  const [autocompleteAuthors, setAutocompleteAuthors] = React.useState<Author[]>();
+  const handleAuthorInput = React.useCallback<React.FormEventHandler<HTMLElementTagNameMap['input']>>(async (e) => {
+    const value = e.currentTarget.value.trim();
+
+    if ('inputType' in e.nativeEvent) {
+      e.currentTarget.dataset.value = `value:${e.currentTarget.value}`;
+
+      if (typeof authorSearchDebounce.current === 'number') {
+        clearTimeout(authorSearchDebounce.current);
+      }
+
+      authorSearchDebounce.current = setTimeout(async () => {
+        const authorsUrl = new URL('/api/authors', `http://${process.env.NEXT_PUBLIC_FRONTEND_BASE_URL}`);
+        const authorsSearch = new URLSearchParams({
+          q: value,
+        });
+        authorsUrl.search = authorsSearch.toString();
+        const bookResponse = await fetch(authorsUrl, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+          },
+        });
+        if (bookResponse.ok) {
+          const data = await bookResponse.json();
+          setAutocompleteAuthors(data);
+        }
+      }, 1000);
+      return;
+    }
+
+    const list = e.currentTarget.list;
+
+    const selectedOption = Array.from(list.options).find((o) => o.value === e.currentTarget.value);
+    if (selectedOption) {
+      e.currentTarget.dataset.value = `id:${e.currentTarget.value}`;
+      e.currentTarget.value = selectedOption.text;
+    }
+  }, []);
 
   const { featured } = useFeatured();
 
@@ -102,7 +175,9 @@ const IndexPage: NextPage = () => {
       >
         <EditBookDialog
           currentBookId={currentBookId}
-          handleEditBookAction={handleEditBookAction}
+          onEditBookAction={handleEditBookAction}
+          onAuthorInput={handleAuthorInput}
+          authors={autocompleteAuthors}
         />
       </Dialog>
     </>

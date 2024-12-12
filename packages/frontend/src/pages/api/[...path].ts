@@ -20,7 +20,7 @@ const handler = async (
   const fetchInit = {
     method,
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json'
     },
   };
 
@@ -40,9 +40,13 @@ const handler = async (
     return;
   }
 
-  const data = await response.json();
+  if (response.status !== 204) {
+    const data = await response.json();
+    res.status(response.status).json(data);
+    return;
+  }
 
-  res.status(response.status).json(data);
+  res.status(response.status).end();
 };
 
 export default handler;

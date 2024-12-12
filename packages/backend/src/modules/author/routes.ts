@@ -14,6 +14,11 @@ export const addRoutes = (server: FastifyInstance) => {
       handler: authorController.getFindOneAuthor,
     })
     .route({
+      method: 'GET',
+      url: '/api/authors/:authorId/books',
+      handler: authorController.getFindAllAuthorBooks,
+    })
+    .route({
       method: 'POST',
       url: '/api/authors',
       handler: authorController.postCreateNewAuthor,

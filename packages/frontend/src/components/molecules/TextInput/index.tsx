@@ -4,7 +4,7 @@ export const TextInputDerivedElementComponent = 'input' as const;
 
 export type TextInputDerivedElement = HTMLElementTagNameMap[typeof TextInputDerivedElementComponent];
 
-export interface TextInputProps extends Omit<React.HTMLProps<TextInputDerivedElement>, 'label'> {
+export interface TextInputProps extends Omit<React.HTMLProps<TextInputDerivedElement>, 'label' | 'list'> {
   label?: React.ReactNode;
   hint?: React.ReactNode;
 }
