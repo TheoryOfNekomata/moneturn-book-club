@@ -15,7 +15,7 @@
     ```shell
     docker compose up
     ```
-3.  Navigate to `localhost:3000`.
+3.  Navigate to `0.0.0.0:3000`.
 
 ## Architecture
 
