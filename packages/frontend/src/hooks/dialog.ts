@@ -5,9 +5,9 @@ export const useDialog = () => {
   const router = useRouter();
 
   const handleDialogSelect = React.useCallback<React.FormEventHandler<HTMLElementTagNameMap['form']>>(async (e) => {
-    const { submitter } = e.nativeEvent as { submitter: HTMLElementTagNameMap['button'] };
+    const { submitter } = e.nativeEvent as unknown as { submitter: HTMLElementTagNameMap['button'] };
     e.preventDefault();
-    const { [submitter.name]: dialog, ...etcQuery } = router.query;
+    const { [submitter.name]: _dialog, ...etcQuery } = router.query;
 
     await router.push({
       query: {
@@ -15,7 +15,7 @@ export const useDialog = () => {
         [submitter.name]: submitter.value,
       },
     });
-  }, []);
+  }, [router]);
 
   const currentOpenDialogId = React.useMemo(() => router.query.dialog, [router.query.dialog]);
 

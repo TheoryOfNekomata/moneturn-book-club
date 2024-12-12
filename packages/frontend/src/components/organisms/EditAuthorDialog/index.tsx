@@ -47,12 +47,12 @@ export const EditAuthorDialog: React.FC<EditAuthorDialogProps> = ({
               <MultilineTextInput
                 name="biography"
                 label="Biography"
-                rows="8"
+                rows={8}
               />
             </div>
           </div>
           <footer className="px-8 h-24 flex justify-end items-center">
-            <ActionButton variant="primary" name="action" value="save">
+            <ActionButton type="submit" variant="primary" name="action" value="save">
               Save Author
             </ActionButton>
           </footer>

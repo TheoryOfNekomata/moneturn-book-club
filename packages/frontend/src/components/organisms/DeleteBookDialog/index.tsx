@@ -29,11 +29,11 @@ export const DeleteBookDialog: React.FC<DeleteBookDialogProps> = ({
             </div>
           </div>
           <footer className="px-8 h-24 flex gap-6 justify-end items-center">
-            <ActionButton variant="primary" name="action" value="cancel" className="w-24">
+            <ActionButton type="submit" variant="primary" name="action" value="cancel" className="w-24">
               No
             </ActionButton>
             {' '}
-            <ActionButton variant="default" name="action" value="delete" className="w-24">
+            <ActionButton type="submit" variant="default" name="action" value="delete" className="w-24">
               Yes
             </ActionButton>
           </footer>

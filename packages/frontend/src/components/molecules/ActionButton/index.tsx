@@ -19,10 +19,14 @@ export const ACTION_BUTTON_SIZE_CLASS_NAMES = {
 
 export type ActionButtonSize = keyof typeof ACTION_BUTTON_SIZE_CLASS_NAMES;
 
-export interface ActionButtonProps extends Omit<React.HTMLProps<ActionButtonDerivedElement>, 'size'> {
+export const ACTION_BUTTON_TYPES = ['button', 'reset', 'submit'] as const;
+
+export type ActionButtonType = typeof ACTION_BUTTON_TYPES[number];
+export interface ActionButtonProps extends Omit<React.HTMLProps<ActionButtonDerivedElement>, 'size' | 'type'> {
   variant?: ActionButtonVariant;
   size?: ActionButtonSize;
   rounded?: boolean;
+  type?: ActionButtonType;
 }
 
 export const ActionButton = React.forwardRef<ActionButtonDerivedElement, ActionButtonProps>(({
@@ -30,6 +34,7 @@ export const ActionButton = React.forwardRef<ActionButtonDerivedElement, ActionB
   className = '',
   variant = 'default',
   size = 'md',
+  type = 'button',
   rounded = false,
   ...etcProps
 }, forwardedRef) => {
@@ -39,6 +44,7 @@ export const ActionButton = React.forwardRef<ActionButtonDerivedElement, ActionB
       {...etcProps}
       className={effectiveClassName}
       ref={forwardedRef}
+      type={type}
     >
       <span className="absolute top-0 left-0 rounded-[inherit] w-full h-full border-2" />
       <span className="relative px-4 font-bold flex items-center justify-center">

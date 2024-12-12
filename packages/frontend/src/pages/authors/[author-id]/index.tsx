@@ -10,7 +10,7 @@ import { useData } from '@/hooks/data';
 import { EditAuthorDialog } from '@/components/organisms/EditAuthorDialog';
 import { DeleteAuthorDialog } from '@/components/organisms/DeleteAuthorDialog';
 import { BookQuerySection } from '@/components/organisms/BookQuerySection';
-import { Author } from '@/models';
+import { Author, Book } from '@/models';
 
 const AuthorDetailsPage = () => {
   const router = useRouter();
@@ -48,19 +48,19 @@ const AuthorDetailsPage = () => {
       });
     },
   });
-  const { data: authorData } = useData({
+  const { data: authorData } = useData<Author>({
     basePath: '/api/authors',
     id: currentAuthorId,
   });
 
-  const { data: authorBooks } = useData({
+  const { data: authorBooks } = useData<Book[]>({
     basePath: '/api/authors',
     attribute: 'books',
     id: currentAuthorId,
   });
 
-  const goBack = (e) => {
-    const { submitter } = e.nativeEvent as { submitter: HTMLElementTagNameMap['button'] };
+  const goBack: React.FormEventHandler<HTMLElementTagNameMap['form']> = (e) => {
+    const { submitter } = e.nativeEvent as unknown as { submitter: HTMLElementTagNameMap['button'] };
     if (submitter.name === 'action' && submitter.value === 'back') {
       handleBack(e);
       return;

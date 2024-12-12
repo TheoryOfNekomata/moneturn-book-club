@@ -9,10 +9,10 @@ export interface UseEditorArgs {
 
 export const useEditor = ({ itemIdQueryKey, saveFn, deleteFn }: UseEditorArgs) => {
   const router = useRouter();
-  const currentItemId = React.useMemo(() => router.query[itemIdQueryKey] as string, [router.query[itemIdQueryKey]]);
+  const currentItemId = React.useMemo(() => router.query[itemIdQueryKey] as string, [itemIdQueryKey, router.query]);
   const handleAction = React.useCallback<React.FormEventHandler<HTMLElementTagNameMap['form']>>(async (e) => {
     e.preventDefault();
-    const { submitter } = e.nativeEvent as { submitter: HTMLElementTagNameMap['button'] };
+    const { submitter } = e.nativeEvent as unknown as { submitter: HTMLElementTagNameMap['button'] };
 
     if (submitter.name !== 'action') {
       return;
@@ -20,7 +20,7 @@ export const useEditor = ({ itemIdQueryKey, saveFn, deleteFn }: UseEditorArgs) =
 
     switch (submitter.value) {
       case 'cancel': {
-        const { dialog: _, ...etcQuery } = router.query;
+        const { dialog: _dialog, ...etcQuery } = router.query;
         await router.replace({
           query: etcQuery,
         });
@@ -42,7 +42,7 @@ export const useEditor = ({ itemIdQueryKey, saveFn, deleteFn }: UseEditorArgs) =
         return;
       }
     }
-  }, []);
+  }, [deleteFn, saveFn, router]);
 
   return React.useMemo(() => ({
     currentItemId,

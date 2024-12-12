@@ -49,13 +49,13 @@ const BookDetailsPage = () => {
       });
     },
   });
-  const { data } = useData({
+  const { data } = useData<Book>({
     basePath: '/api/books',
     id: currentBookId,
   });
 
-  const goBack = (e) => {
-    const { submitter } = e.nativeEvent as { submitter: HTMLElementTagNameMap['button'] };
+  const goBack: React.FormEventHandler<HTMLElementTagNameMap['form']> = (e) => {
+    const { submitter } = e.nativeEvent as unknown as { submitter: HTMLElementTagNameMap['button'] };
     if (submitter.name === 'action' && submitter.value === 'back') {
       handleBack(e);
       return;

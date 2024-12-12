@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Book } from '@/models';
 
 export interface UseDataArgs {
   basePath: string;
@@ -7,8 +6,8 @@ export interface UseDataArgs {
   id: string;
 }
 
-export const useData = (args: UseDataArgs) => {
-  const [data, setData] = React.useState<unknown>();
+export const useData = <T>(args: UseDataArgs) => {
+  const [data, setData] = React.useState<T>();
 
   React.useEffect(() => {
     const loadData = async () => {
@@ -25,7 +24,7 @@ export const useData = (args: UseDataArgs) => {
     };
 
     void loadData();
-  }, [args.basePath, args.id]);
+  }, [args.basePath, args.id, args.attribute]);
 
   return React.useMemo(() => ({
     data,

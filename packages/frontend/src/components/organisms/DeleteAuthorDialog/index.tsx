@@ -26,15 +26,15 @@ export const DeleteAuthorDialog: React.FC<DeleteAuthorDialogProps> = ({
             {currentAuthorId && <input type="hidden" name="id" value={currentAuthorId}/>}
             <div className="my-12 text-center text-lg flex flex-col gap-4">
               <p>Are you sure you want to delete this author?</p>
-              <p>All the author's books will be deleted as well.</p>
+              <p>All the author&rsquo;s books will be deleted as well.</p>
             </div>
           </div>
           <footer className="px-8 h-24 flex gap-6 justify-end items-center">
-            <ActionButton variant="primary" name="action" value="cancel" className="w-24">
+            <ActionButton type="submit" variant="primary" name="action" value="cancel" className="w-24">
               No
             </ActionButton>
             {' '}
-            <ActionButton variant="default" name="action" value="delete" className="w-24">
+            <ActionButton type="submit" variant="default" name="action" value="delete" className="w-24">
               Yes
             </ActionButton>
           </footer>

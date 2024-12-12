@@ -6,7 +6,7 @@ export const useBackNavigation = () => {
   const handleBack = React.useCallback<React.FormEventHandler<HTMLElementTagNameMap['form']>>((e) => {
     e.preventDefault();
     router.back();
-  }, []);
+  }, [router]);
 
   return React.useMemo(() => ({
     handleBack,

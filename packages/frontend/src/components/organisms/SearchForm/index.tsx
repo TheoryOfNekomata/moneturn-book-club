@@ -24,7 +24,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({
           />
         </div>
         <div>
-          <ActionButton variant="primary">Search</ActionButton>
+          <ActionButton type="submit" variant="primary">Search</ActionButton>
         </div>
       </div>
     </fieldset>

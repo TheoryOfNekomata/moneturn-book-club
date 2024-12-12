@@ -67,15 +67,13 @@ const IndexPage: NextPage = () => {
     },
   });
 
-  const authorSearchDebounce = React.useRef<number | null>(null);
+  const authorSearchDebounce = React.useRef<NodeJS.Timeout | null>(null);
 
   const [autocompleteAuthors, setAutocompleteAuthors] = React.useState<Author[]>();
   const handleAuthorInput = React.useCallback<React.FormEventHandler<HTMLElementTagNameMap['input']>>(async (e) => {
     const value = e.currentTarget.value.trim();
 
     if ('inputType' in e.nativeEvent) {
-      e.currentTarget.dataset.value = `value:${e.currentTarget.value}`;
-
       if (typeof authorSearchDebounce.current === 'number') {
         clearTimeout(authorSearchDebounce.current);
       }
@@ -96,16 +94,8 @@ const IndexPage: NextPage = () => {
           const data = await bookResponse.json();
           setAutocompleteAuthors(data);
         }
-      }, 1000);
+      }, 1000) as NodeJS.Timeout;
       return;
-    }
-
-    const list = e.currentTarget.list;
-
-    const selectedOption = Array.from(list.options).find((o) => o.value === e.currentTarget.value);
-    if (selectedOption) {
-      e.currentTarget.dataset.value = `id:${e.currentTarget.value}`;
-      e.currentTarget.value = selectedOption.text;
     }
   }, []);
 

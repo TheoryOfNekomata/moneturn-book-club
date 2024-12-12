@@ -5,7 +5,7 @@ export const ComboBoxDerivedElementComponent = 'input' as const;
 
 export type ComboBoxDerivedElement = HTMLElementTagNameMap[typeof ComboBoxDerivedElementComponent];
 
-export interface ComboBoxProps extends React.HTMLProps<ComboBoxDerivedElement> {}
+export type ComboBoxProps = Omit<React.HTMLProps<ComboBoxDerivedElement>, 'list'>;
 
 export const ComboBox = React.forwardRef<ComboBoxDerivedElement, ComboBoxProps>((
   {
@@ -31,7 +31,7 @@ export const ComboBox = React.forwardRef<ComboBoxDerivedElement, ComboBoxProps>(
     }
 
     const list = e.currentTarget.list;
-    const selectedOption = Array.from(list.options).find((o) => o.value === e.currentTarget.value);
+    const selectedOption = list ? Array.from(list.options).find((o) => o.value === e.currentTarget.value) : null;
     if (selectedOption) {
       if (typeof effectiveRef === 'function') {
         // TODO
@@ -45,7 +45,7 @@ export const ComboBox = React.forwardRef<ComboBoxDerivedElement, ComboBoxProps>(
     }
 
     onInput?.(e);
-  }, [onInput]);
+  }, [onInput, effectiveRef]);
 
   return (
     <>
